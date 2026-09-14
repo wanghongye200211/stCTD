@@ -1,10 +1,2 @@
-anndata
-h5py
-matplotlib
-numpy
-pandas
-pillow
-pot
-scipy
-torch
-torchdiffeq
+# Use the dependency definitions in pyproject.toml.
+-e .

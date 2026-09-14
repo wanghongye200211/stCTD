@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 import time
 from pathlib import Path
@@ -24,10 +25,41 @@ from stctd.train import train_stctd_model  # noqa: E402
 from stctd.utils import resolve_device, write_json  # noqa: E402
 
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Train the stCTD model with the full time-grid objective.")
-    parser.add_argument("--input-h5ad", type=Path, required=True)
-    parser.add_argument("--out-dir", type=Path, default=REPO_ROOT / "runs" / "stctd")
+def _positive_int(value: str) -> int:
+    parsed = int(value)
+    if parsed <= 0:
+        raise argparse.ArgumentTypeError("must be a positive integer")
+    return parsed
+
+
+def _nonnegative_int(value: str) -> int:
+    parsed = int(value)
+    if parsed < 0:
+        raise argparse.ArgumentTypeError("must be a nonnegative integer")
+    return parsed
+
+
+def _finite_float(value: str) -> float:
+    parsed = float(value)
+    if not math.isfinite(parsed):
+        raise argparse.ArgumentTypeError("must be a finite number")
+    return parsed
+
+
+def _positive_float(value: str) -> float:
+    parsed = float(value)
+    if not math.isfinite(parsed) or parsed <= 0:
+        raise argparse.ArgumentTypeError("must be a finite positive number")
+    return parsed
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Train and evaluate stCTD on prepared spatial and molecular features.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument("--input-h5ad", type=Path, required=True, help="Prepared AnnData input")
+    parser.add_argument("--out-dir", type=Path, default=REPO_ROOT / "runs" / "stctd", help="Run output directory; use a new directory for each run")
     parser.add_argument("--device", default="auto", choices=["cpu", "mps", "cuda", "auto"])
     parser.add_argument("--spatial-key", default="X_spatial_input")
     parser.add_argument("--latent-key", default="X_gene_input")
@@ -35,38 +67,51 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--raw-time-key", default="time")
     parser.add_argument("--annotation-key", default="Annotation")
     parser.add_argument("--expression-layer-key", default="lognorm")
-    parser.add_argument("--decoder-checkpoint", type=Path, default=None)
+    parser.add_argument("--decoder-checkpoint", type=Path, default=None, help="Optional matching embedding decoder for expression reconstruction")
     parser.add_argument("--require-obs-value", nargs=2, action="append", metavar=("KEY", "VALUE"), default=[])
-    parser.add_argument("--epochs", type=int, default=1000)
-    parser.add_argument("--sample-size", type=int, default=1024)
-    parser.add_argument("--hidden-dim", type=int, default=128)
-    parser.add_argument("--n-hidden", type=int, default=6)
+    parser.add_argument("--epochs", type=_positive_int, default=1000)
+    parser.add_argument("--sample-size", type=_positive_int, default=1024)
+    parser.add_argument("--hidden-dim", type=_positive_int, default=128)
+    parser.add_argument("--n-hidden", type=_nonnegative_int, default=6)
     parser.add_argument("--activation", default="relu")
     parser.add_argument("--velocity-parameterization", choices=["potential", "vector"], default="potential")
-    parser.add_argument("--lr", type=float, default=1e-3)
+    parser.add_argument("--lr", type=_positive_float, default=1e-3)
     parser.add_argument("--optimizer", default="adam", choices=["adam", "adamw"])
     parser.add_argument("--loss-mode", default="stctd_fullgrid", choices=["stctd_fullgrid", "endpoint"])
-    parser.add_argument("--ode-step-size", type=float, default=0.25)
-    parser.add_argument("--steps-per-interval", type=int, default=8)
+    parser.add_argument("--ode-step-size", type=_positive_float, default=0.25, help="Fixed integration step in full-grid mode")
+    parser.add_argument("--steps-per-interval", type=_positive_int, default=8, help="Integration steps per observed interval in endpoint mode")
     parser.add_argument("--lambda-match", type=float, default=4e5)
-    parser.add_argument("--lambda-action", type=float, default=0.0)
-    parser.add_argument("--lambda-ssp", type=float, default=0.0)
+    parser.add_argument("--lambda-action", type=float, default=0.0, help="Endpoint action weight; full-grid mode uses a fixed coefficient of 1")
+    parser.add_argument("--lambda-ssp", type=float, default=0.0, help="Spatial-coherence penalty, endpoint mode only")
     parser.add_argument("--lambda-hj", type=float, default=0.0)
-    parser.add_argument("--spatial-weight", type=float, default=3.0)
+    parser.add_argument("--spatial-weight", type=_finite_float, default=3.0)
     parser.add_argument("--scale-features", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--alpha-exp", type=float, default=0.01)
     parser.add_argument("--alpha-gro", type=float, default=0.0002)
     parser.add_argument("--kappa-exp", type=float, default=0.02)
     parser.add_argument("--kappa-gro", type=float, default=0.1)
-    parser.add_argument("--trace-interval", type=int, default=25)
+    parser.add_argument("--trace-interval", type=_positive_int, default=25)
     parser.add_argument("--seed", type=int, default=19491001)
     parser.add_argument("--no-sample-growth", action="store_true")
-    parser.add_argument("--sample-growth-interval", type=int, default=100)
-    parser.add_argument("--sample-growth-step", type=int, default=20)
-    parser.add_argument("--use-cell-type-prior", action="store_true")
-    parser.add_argument("--baseline-summary", type=Path, action="append", default=[])
+    parser.add_argument("--sample-growth-interval", type=_positive_int, default=100)
+    parser.add_argument("--sample-growth-step", type=_nonnegative_int, default=20)
+    parser.add_argument("--use-cell-type-prior", action="store_true", help="Endpoint mode only")
+    parser.add_argument("--baseline-summary", type=Path, action="append", default=[], help="Comparison summary JSON; repeat for multiple runs")
     parser.add_argument("--quiet", action="store_true")
-    return parser.parse_args()
+    args = parser.parse_args(argv)
+    if args.scale_features and args.spatial_weight <= 0:
+        parser.error("--spatial-weight must be positive when feature scaling is enabled")
+    for path in [args.input_h5ad, *args.baseline_summary, *([args.decoder_checkpoint] if args.decoder_checkpoint else [])]:
+        if not path.is_file():
+            parser.error(f"File does not exist: {path}")
+    if args.loss_mode == "stctd_fullgrid":
+        if args.use_cell_type_prior or args.lambda_ssp != 0:
+            parser.error("--use-cell-type-prior and nonzero --lambda-ssp require --loss-mode endpoint")
+        if args.lambda_action != 0:
+            parser.error("--lambda-action applies only to --loss-mode endpoint; full-grid action has a fixed coefficient of 1")
+    if args.velocity_parameterization == "vector" and args.lambda_hj != 0:
+        parser.error("Nonzero --lambda-hj requires --velocity-parameterization potential")
+    return args
 
 
 def _load_json(path: Path) -> dict[str, Any]:
@@ -110,16 +155,15 @@ def _metrics_rows(summary: dict[str, Any], baseline_paths: list[Path]) -> list[d
         }
     )
     for path in baseline_paths:
-        if not path.exists():
-            continue
         baseline = _load_json(path)
-        metrics = baseline.get("metrics", [])
+        metrics = baseline.get("evaluation", baseline).get("metrics", [])
         if not metrics:
-            continue
+            raise ValueError(f"No evaluation metrics found in baseline summary: {path}")
         cfg = baseline.get("config", {})
+        train_cfg = cfg.get("train", cfg)
         rows.append(
             {
-                "method": f"baseline lambda_hj={float(cfg.get('lambda_hj', cfg.get('lambda_hjb', 0.0))):g}",
+                "method": str(cfg.get("method", f"baseline lambda_hj={float(train_cfg.get('lambda_hj', train_cfg.get('lambda_hjb', 0.0))):g}")),
                 "run_dir": baseline.get("run_dir", str(path.parent)),
                 "avg_label_prop_corr": float(np.mean([m["label_prop_corr"] for m in metrics])),
                 "avg_label_prop_l1": float(np.mean([m["label_prop_l1"] for m in metrics])),

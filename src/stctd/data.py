@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import sys
 import random
 from dataclasses import dataclass
 from pathlib import Path
@@ -11,19 +10,10 @@ import numpy as np
 import scipy.sparse as sp
 import torch
 
+from embedding.preprocessing.gene_prior_gatae import GenePriorGATConfig, train_gene_prior_gatae
+
 from .config import DataConfig
 from .utils import write_json
-
-
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-EMBEDDING_SRC = PROJECT_ROOT / "src"
-if str(EMBEDDING_SRC) not in sys.path:
-    sys.path.insert(0, str(EMBEDDING_SRC))
-
-from embedding.preprocessing.gene_prior_gatae import (  # noqa: E402
-    GenePriorGATConfig,
-    train_gene_prior_gatae,
-)
 
 
 def _to_dense_float32(matrix: Any) -> np.ndarray:
@@ -161,13 +151,51 @@ def ensure_gat_embedding(config: DataConfig) -> tuple[Path, Path]:
     return ready_h5ad, checkpoint
 
 
+def _validate_prepared_input(adata: ad.AnnData, config: DataConfig) -> None:
+    """Check the public input contract before scaling or allocating tensors."""
+    if adata.n_obs == 0 or adata.n_vars == 0:
+        raise ValueError("Input AnnData must contain observations and genes.")
+    for key in (config.annotation_key, config.time_key, config.raw_time_key):
+        if key not in adata.obs:
+            raise ValueError(f"Missing required AnnData field: obs[{key!r}].")
+        if adata.obs[key].isna().any():
+            raise ValueError(f"obs[{key!r}] must not contain missing values.")
+    for key in (config.spatial_key, config.latent_key):
+        if key not in adata.obsm:
+            raise ValueError(f"Missing required AnnData field: obsm[{key!r}].")
+        values = np.asarray(adata.obsm[key], dtype=np.float32)
+        if values.ndim != 2 or values.shape[1] == 0:
+            raise ValueError(f"obsm[{key!r}] must be a nonempty two-dimensional matrix.")
+        if not np.isfinite(values).all():
+            raise ValueError(f"obsm[{key!r}] must contain only finite numeric values.")
+    if adata.obsm[config.spatial_key].shape[1] != 2:
+        raise ValueError(f"obsm[{config.spatial_key!r}] must have exactly two spatial columns.")
+    for key in (config.time_key, config.raw_time_key):
+        try:
+            values = np.asarray(adata.obs[key], dtype=np.float32)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"obs[{key!r}] must contain numeric time values.") from exc
+        if not np.isfinite(values).all():
+            raise ValueError(f"obs[{key!r}] must contain only finite numeric time values.")
+    if np.unique(np.asarray(adata.obs[config.time_key], dtype=np.float32)).size < 2:
+        raise ValueError("Need at least two distinct model time points.")
+    if config.scale_features and (not np.isfinite(config.spatial_weight) or config.spatial_weight <= 0):
+        raise ValueError("spatial_weight must be finite and positive when feature scaling is enabled.")
+    expression = adata.layers.get(config.expression_layer_key, adata.X)
+    values = expression.data if sp.issparse(expression) else np.asarray(expression)
+    if not np.isfinite(values).all():
+        raise ValueError("The expression matrix must contain only finite numeric values.")
+
+
 def load_prepared_data(config: DataConfig, device: torch.device) -> tuple[PreparedData, Path | None]:
     if config.use_precomputed_embedding:
         ready_h5ad = config.input_h5ad
         decoder_checkpoint = config.decoder_checkpoint
     else:
         ready_h5ad, decoder_checkpoint = ensure_gat_embedding(config)
-    adata = ensure_csr(ad.read_h5ad(ready_h5ad))
+    adata = ad.read_h5ad(ready_h5ad)
+    _validate_prepared_input(adata, config)
+    adata = ensure_csr(adata)
     adata.obs_names_make_unique()
     adata.obs[config.annotation_key] = adata.obs[config.annotation_key].astype("category")
 

@@ -309,6 +309,7 @@ def _build_pred_adata(
     pred.obs["source_weight"] = pred_weights_all[chosen]
     pred.obsm[data_config.spatial_key] = spatial
     pred.obsm[data_config.latent_key] = latent
+    pred.uns["stctd_expression_source"] = "decoder" if decoder is not None else "zeros_no_decoder"
     pred.uns["Annotation_colors"] = data.adata.uns.get("Annotation_colors", [])
     pred.uns[f"{data_config.annotation_key}_colors"] = data.adata.uns.get(f"{data_config.annotation_key}_colors", pred.uns["Annotation_colors"])
     return pred
@@ -396,6 +397,8 @@ def evaluate_stctd_model(
         "predictions_dir": str(pred_dir),
         "comparisons_dir": str(comparison_dir),
         "label_source": label_source,
+        "expression_source": "decoder" if decoder is not None else "zeros_no_decoder",
+        "prediction_cell_counts": "resampled_to_observed_counts",
         "latent_classifier": {
             "checkpoint": str(latent_classifier.checkpoint_path),
             "trace": str(latent_classifier.trace_path),
