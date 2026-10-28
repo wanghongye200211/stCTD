@@ -1,0 +1,74 @@
+--- outputs/supplement_p_tables_20261020/verify_statistics.py
++++ replay_tables.py
+@@ -8,17 +8,19 @@
+ from scipy.stats import ttest_ind, t
+ from statsmodels.stats.multitest import multipletests
+ 
+-OUT = Path(__file__).resolve().parent
+-ROOT = OUT.parents[1]
+-for folder in ["audit", "source_data", "candidate"]:
+-    (OUT / folder).mkdir(exist_ok=True)
+-TARGET = ROOT / "第三篇/第三篇论文/投稿/stCTD_Supplementary_Information_revised.docx"
+-BASELINE = OUT / "audit/baseline.docx"
+-if not BASELINE.exists():
+-    shutil.copy2(TARGET, BASELINE)
++import argparse
++parser = argparse.ArgumentParser(description=__doc__)
++parser.add_argument('--output-dir', type=Path, required=True)
++args = parser.parse_args()
++ROOT = Path(__file__).resolve().parent
++OUT = args.output_dir.resolve()
++if OUT.exists() and any(OUT.iterdir()):
++    raise SystemExit('Choose a new or empty output directory.')
++for folder in ['audit', 'source_data']:
++    (OUT / folder).mkdir(parents=True, exist_ok=True)
+ sha = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
+-source = ROOT / "outputs/all_window_mean_increase_20261020/source_data/scores.csv"
+-reference = ROOT / "outputs/all_window_mean_increase_20261020/source_data/local_statistics.csv"
++source = ROOT / 'inputs/scores.csv'
++reference = ROOT / 'expected/local_statistics.csv'
+ scores = pd.read_csv(source)
+ saved = pd.read_csv(reference)
+ keys = ["mouse", "zebrafish_B04", "zebrafish_B07",
+@@ -63,9 +65,9 @@
+             assert np.allclose(old.p_increase, pp, atol=1e-13)
+             assert np.allclose(old.q_bh, qq, atol=1e-13)
+         else:
+-            oldpath = (ROOT / "outputs/fig4b_welch_n2_20261020/source_data/Fig4b_P_values_n2.csv"
++            oldpath = (ROOT / "expected/fig4b_n2.csv"
+                        if key == "zebrafish_B04" else
+-                       ROOT / "outputs/fig5_reaegc_welch_n2_20261020/source_data/Fig5_reaEGC_P_values_n2.csv")
++                       ROOT / "expected/fig5_n2.csv")
+             old = pd.read_csv(oldpath).dropna(subset=["P_value"])
+             assert np.allclose(old.P_value, pp, atol=1e-13)
+             assert np.allclose(old.BH_adjusted_P, qq, atol=1e-13)
+@@ -92,21 +94,18 @@
+     pd.DataFrame(rows, columns=["Group (points per window)",f"Time ({unit})","P","BH-adjusted P"]).to_csv(
+         OUT / f"source_data/Table_S{num}.csv", index=False)
+ 
+-discrepancies = []
+-for key, time, panel, display in [("mouse",13.7,"Fig. 3d",.004),("zebrafish_B07",12.9,"Fig. 4e",.009)]:
+-    r = next(r for r in records if r["series"]==key and r["n_per_window"]==4 and np.isclose(r["time"],time))
+-    discrepancies.append(dict(panel=panel, time=time, current_figure_P=display,
+-                              recalculated_P=r["P"], BH_adjusted_P=r["BH_adjusted_P"],
+-                              n_per_window=4, status="Figure label differs; table uses recomputed source value"))
+-
+ (OUT / "source_data/tables_payload.json").write_text(json.dumps(tables,indent=2))
+ (OUT / "source_data/window_audit.json").write_text(json.dumps(records,indent=2))
+ scores[scores.series.isin(keys)].to_csv(OUT / "source_data/unchanged_scores.csv",index=False)
+-audit = dict(source=str(source), source_sha256=sha(source), target=str(TARGET),
+-    baseline_sha256=sha(BASELINE), primary="One-sided Welch, recent 4 versus preceding 4",
++audit = dict(source=str(source), source_sha256=sha(source), primary="One-sided Welch, recent 4 versus preceding 4",
+     sensitivity="Recent 2 versus preceding 2, only NC/OT and reaRGC",
+     scan_stride=1, correction="BH within each series and window size, all eligible endpoints",
+-    checks=checks, table_rows={f"S{x['number']}":len(x["rows"]) for x in tables},
+-    figure_discrepancies=discrepancies)
++    checks=checks, table_rows={f"S{x['number']}":len(x["rows"]) for x in tables})
+ (OUT / "audit/statistical_verification.json").write_text(json.dumps(audit,indent=2))
+ print(json.dumps(audit,indent=2))
++
++for number in [4, 5, 6]:
++    actual = pd.read_csv(OUT / f'source_data/Table_S{number}.csv')
++    expected = pd.read_csv(ROOT / f'expected/Table_S{number}.csv')
++    pd.testing.assert_frame_equal(actual, expected, check_exact=False, rtol=1e-10, atol=1e-13)
++print('PASS: 256 rows of Tables S4-S6 match the frozen manuscript inputs.')

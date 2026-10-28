@@ -60,6 +60,13 @@ growth_rate_net:
 The growth branch intentionally remains three layers deep even when the spatial
 and molecular-potential branches use six hidden layers.
 
+The 28 October 2026 audit checked this architecture against the current 1020
+submission manuscript and supplementary information. The supplement already
+states 6/6/3; the current main Methods no longer contains the older all-six-layer
+statement. See the [submission consistency audit](submission_audit_20261028.md)
+for the optional explicit main-text sentence and the separate analysis-version
+differences. Network agreement does not establish full paper-result reproducibility.
+
 ## Training Configuration
 
 The public defaults follow the manuscript implementation:
