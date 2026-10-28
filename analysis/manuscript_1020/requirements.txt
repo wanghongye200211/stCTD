@@ -1,0 +1,6 @@
+# Environment used for the lightweight saved-score replay on 2026-10-28.
+# Separate from the dynamics-training environment; no GPU is needed.
+numpy==2.0.2
+pandas==2.3.3
+scipy==1.13.1
+statsmodels==0.14.6

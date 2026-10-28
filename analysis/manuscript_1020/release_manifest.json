@@ -1,0 +1,225 @@
+{
+  "scope": "All analysis package files except this manifest; excludes Python caches",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "28f3affe1932b61d30310f738cbef12b901774d0781705893655691358f3bf36",
+      "bytes": 5439
+    },
+    {
+      "path": "expected/Table_S4.csv",
+      "sha256": "d85b467a4be33126afe9bb68fa820c28bb226b6e623365ac500da6533d799770",
+      "bytes": 2136
+    },
+    {
+      "path": "expected/Table_S5.csv",
+      "sha256": "8c9bc9db9184441f07b4d8aeee2e579dc91335b6020e1a85c5bdeb9314ae4e14",
+      "bytes": 6101
+    },
+    {
+      "path": "expected/Table_S6.csv",
+      "sha256": "289ebe1c5d77fd35b26f6d717dfa139e6ea94c0638fd58d6654ae0ae976df2f8",
+      "bytes": 6954
+    },
+    {
+      "path": "expected/change_time_posterior.csv",
+      "sha256": "0255bd38eb7e174cc6366a00b1d9c784b381d96a759e54f6dbaf7b82921a248f",
+      "bytes": 29764
+    },
+    {
+      "path": "expected/fig4b_n2.csv",
+      "sha256": "561142e8ef5e50bd8a3827c09f56de76bb1eaa4f222e423dd0ffc23f2b85b4a4",
+      "bytes": 1718
+    },
+    {
+      "path": "expected/fig5_n2.csv",
+      "sha256": "0ea8b6cee81a48c45940d662caf17d4d99cd16aad24e70471f712832504e64b1",
+      "bytes": 1467
+    },
+    {
+      "path": "expected/local_statistics.csv",
+      "sha256": "d263e2069b39c0f57ae7b3dcc50e68cb3e404414b0f602d9d6187e51a4b61a7c",
+      "bytes": 275594
+    },
+    {
+      "path": "expected/simulation_0802_Welch.csv",
+      "sha256": "e1f64f9f091ddc283038c60f201fce341ade443846c7bc392c11c9f23e376234",
+      "bytes": 10692
+    },
+    {
+      "path": "inputs/fish_raw_components.csv",
+      "sha256": "f6d5c4c7ad651414e8dfef2534a5671ef517caac8935eda651bf4b87c256c8a8",
+      "bytes": 15470
+    },
+    {
+      "path": "inputs/mouse_components.csv",
+      "sha256": "779cf961169cdb9647dc62146ff3eedf6e8b9941bbdec5244e95965f62dd4dfa",
+      "bytes": 3452
+    },
+    {
+      "path": "inputs/scores.csv",
+      "sha256": "d54ff914f16f97019a7be22b29604ba46dd3797016f326643b501b26e2e9b1f7",
+      "bytes": 15551
+    },
+    {
+      "path": "inputs/series_manifest.csv",
+      "sha256": "3764b80ecc8fb6aaa1ce8dfad0234cba4b805ed9733c91fb769edea7e5360278",
+      "bytes": 2374
+    },
+    {
+      "path": "inputs/simulation_0802_scores.csv",
+      "sha256": "c5cb02236685a021d4009bca579dcbb11e40d7e472687c20847b533aa32cbb47",
+      "bytes": 5399
+    },
+    {
+      "path": "inputs/supplement_mean_component_variant.csv",
+      "sha256": "6bd96d303bd754dc1ac830d40eec17379c1112e2890929f19fac9acf84455c6b",
+      "bytes": 565873
+    },
+    {
+      "path": "replay_bayesian.py",
+      "sha256": "1808c2ae7f30653bdfb228a4c838ba229bffeb127ae8afba69366aa60d9919ae",
+      "bytes": 2296
+    },
+    {
+      "path": "replay_tables.py",
+      "sha256": "669991380f7146733cfe441105807eefa1ecf5c67135c32b9968b34c044d9bc8",
+      "bytes": 5890
+    },
+    {
+      "path": "replay_tables_io.diff",
+      "sha256": "15c13113179645ccdc571b17d5a5548d469591830438602c4552d8dcaae00a95",
+      "bytes": 4255
+    },
+    {
+      "path": "requirements.txt",
+      "sha256": "20edddef8bae09d431188d7e2eda2d8284ed80d19c5cedaf41bbd1a80db7249f",
+      "bytes": 203
+    },
+    {
+      "path": "score_statistics.py",
+      "sha256": "277ddabfa0d410fa03672edb31897528715d1a6f995fab9900127b221932fd79",
+      "bytes": 3478
+    },
+    {
+      "path": "source_manifest.json",
+      "sha256": "2d9ff4ddbda0d82588e5553c5ffe7fe91b36c508a35be6d58c8baee15b1f7824",
+      "bytes": 15519
+    },
+    {
+      "path": "source_snapshot/SpaPOT_runs/zesta_scripts/make_zesta_stvcr_classifier_dynamic.py",
+      "sha256": "5c8988b3bf462b2ce0373fc3205c6d34b0a843ff1d8c1e451c94c21dfd6ada3a",
+      "bytes": 24668
+    },
+    {
+      "path": "source_snapshot/experiments/mean_centered_transition_20261011/rgc_origin_analysis.py",
+      "sha256": "eac5e0a506504bdf44326943ea8bcf2b479aa5f8b897df57332e88606a5b1044",
+      "bytes": 9387
+    },
+    {
+      "path": "source_snapshot/outputs/all_window_mean_increase_20261020/scripts/prepare.py",
+      "sha256": "6e94c28e51a424681cc4c8d3d8bbecee2347fb6b34906c32e6d8300d6a5aebee",
+      "bytes": 10436
+    },
+    {
+      "path": "source_snapshot/outputs/all_window_mean_increase_20261020/scripts/score_statistics.py",
+      "sha256": "277ddabfa0d410fa03672edb31897528715d1a6f995fab9900127b221932fd79",
+      "bytes": 3478
+    },
+    {
+      "path": "source_snapshot/outputs/critical_curves_redefined_20260915_w08_w02/prepare_spatial.py",
+      "sha256": "d2a64a8b5812957993f391f2c4d1ee1b54abd48939c4358a9ffb362e57830d6a",
+      "bytes": 22298
+    },
+    {
+      "path": "source_snapshot/outputs/critical_curves_redefined_20260915_w08_w02/redraw_curves.py",
+      "sha256": "44668398b79e7b5c0d4f902ca56a7ebd64bca60f2400653736693c187e15303f",
+      "bytes": 11012
+    },
+    {
+      "path": "source_snapshot/outputs/fig4_raw_initial_reference_20261018/scripts/prepare.py",
+      "sha256": "fa07fd27d741ee747589762b7332412457a10aef6baf80de70a1be52712d9d7d",
+      "bytes": 9161
+    },
+    {
+      "path": "source_snapshot/outputs/supplement_p_tables_20261020/verify_statistics.py",
+      "sha256": "a872cd33538433f077e467dc006fbb705b42787becae0db0c44979433ca17103",
+      "bytes": 6282
+    },
+    {
+      "path": "source_snapshot/psg_full_ruot_gat/scripts/generate_pitchfork_fate_critical_simulated_st.py",
+      "sha256": "378d65626ab2c82bb185bf7b09e7115f2655d45fa19df4c5835f69f5da7d74dc",
+      "bytes": 45755
+    },
+    {
+      "path": "source_snapshot/psg_full_ruot_gat/scripts/run_dorsal_gene_critical_perturbation.py",
+      "sha256": "ad2a4f8ea7a0aab158dd0a6a980c097da93c75231e71738984dc4fc89f7e72a5",
+      "bytes": 112657
+    },
+    {
+      "path": "source_snapshot/result_figures/斑马鱼/ij/code/make_zebrafish_ab_region_perturbation.py",
+      "sha256": "a4ca567111907ced73af5e2df38125352935f56d6954ec0b7d35961644e1749f",
+      "bytes": 44703
+    },
+    {
+      "path": "source_snapshot/scripts/critical_transition_contract.py",
+      "sha256": "bec093ae103990d7936867ad82d24c1f28bf5507d304196bedb81fe884ce875a",
+      "bytes": 13870
+    },
+    {
+      "path": "source_snapshot/scripts/dorsal_midbrain/build_figure6c_extended_spatial_metric_table.py",
+      "sha256": "945e6e0c245010f2da80320a3307627a50525d3af14d1cb94027d52832c373b8",
+      "bytes": 37753
+    },
+    {
+      "path": "source_snapshot/scripts/dorsal_midbrain/make_final_perturbation_story_figures.py",
+      "sha256": "a040064d05c04189347933c5f7cea078e20f18217a31517549788b32dd9b12bd",
+      "bytes": 76082
+    },
+    {
+      "path": "source_snapshot/scripts/dorsal_midbrain/make_gene_perturbation_paired_trajectory_panel.py",
+      "sha256": "bb1f9594a5b6e777dcb9b67665ac61a0e78b19c2d5a6c0a1b67a1571d1e8ab21",
+      "bytes": 56301
+    },
+    {
+      "path": "source_snapshot/scripts/dorsal_midbrain/prepare_official_external_benchmark_v3.py",
+      "sha256": "7ed8e07b36a06d08d99054fd9f4ca872043aa24b4c6ffcbac2557c1eaa7ff28b",
+      "bytes": 41859
+    },
+    {
+      "path": "source_snapshot/scripts/dorsal_midbrain/rank_absolute_potential_speed.py",
+      "sha256": "637bc6b832ba3dcf6e1b4c1f22c84c9577fe3ddc825936c6992332309e2204a0",
+      "bytes": 4700
+    },
+    {
+      "path": "source_snapshot/scripts/dorsal_midbrain/rank_adjacent_potential_speed_change.py",
+      "sha256": "987d690e64e56b05014aedcb31f678f3f9f372e9ab63b97e1b7768b1ee117190",
+      "bytes": 8691
+    },
+    {
+      "path": "source_snapshot/scripts/dorsal_midbrain/rank_dnb_pool_by_potential_descent.py",
+      "sha256": "97e02376f79352cbd53e9c580511149c6ee76c577d28bdef7d1ca98525b65886",
+      "bytes": 17760
+    },
+    {
+      "path": "source_snapshot/scripts/dorsal_midbrain/rebuild_figure6_unified_model_comparison_v5.py",
+      "sha256": "0d627921dcec96840a36377d3252a6aec30ca830869e9383065e3ab38988476b",
+      "bytes": 62219
+    },
+    {
+      "path": "source_snapshot/scripts/dorsal_midbrain/run_official_external_baselines_v3.py",
+      "sha256": "1cc691e3cfa085c7c6e981def926fde1947dafc631f865335ed0f55183e7120a",
+      "bytes": 26389
+    },
+    {
+      "path": "source_snapshot/scripts/dorsal_midbrain/screen_literature_gene_b_to_b_transitions.py",
+      "sha256": "ab1fcc155e84aec2f9fe897835beb73d936564e9ebfc3282f81fa607587fbad7",
+      "bytes": 20892
+    },
+    {
+      "path": "validation.json",
+      "sha256": "86e5b541eee74ab399fba669cbc68bbd73534168b5a2a34bd9c0bb25750d226f",
+      "bytes": 4095
+    }
+  ]
+}

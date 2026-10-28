@@ -1,0 +1,205 @@
+{
+  "date": "2026-10-28",
+  "baseline_commit": "de6181d68fcde0d8dda555b4629f64ceb80ed4c3",
+  "existing_regression_tests": {
+    "passed": 16,
+    "failed": 0
+  },
+  "architecture": {
+    "spatial_velocity_net": {
+      "hidden_layers": 6,
+      "linear_shapes": [
+        [
+          128,
+          13
+        ],
+        [
+          128,
+          128
+        ],
+        [
+          128,
+          128
+        ],
+        [
+          128,
+          128
+        ],
+        [
+          128,
+          128
+        ],
+        [
+          128,
+          128
+        ],
+        [
+          2,
+          128
+        ]
+      ]
+    },
+    "gene_velocity_net": {
+      "hidden_layers": 6,
+      "linear_shapes": [
+        [
+          128,
+          13
+        ],
+        [
+          128,
+          128
+        ],
+        [
+          128,
+          128
+        ],
+        [
+          128,
+          128
+        ],
+        [
+          128,
+          128
+        ],
+        [
+          128,
+          128
+        ],
+        [
+          1,
+          128
+        ]
+      ]
+    },
+    "growth_rate_net": {
+      "hidden_layers": 3,
+      "linear_shapes": [
+        [
+          128,
+          13
+        ],
+        [
+          128,
+          128
+        ],
+        [
+          128,
+          128
+        ],
+        [
+          1,
+          128
+        ]
+      ]
+    }
+  },
+  "checkpoint_probe_equivalence": {
+    "mouse": {
+      "checkpoint": "SpaPOT_runs/dorsal_midbrain_retrained_gat10_notebook_hybrid_e1000_s512_noalign/save_model/stvcr_notebook_model.pth",
+      "max_abs_velocity_diff": 0.0,
+      "max_abs_growth_diff": 0.0,
+      "spatial_diff": 0.0,
+      "gene_diff": 0.0,
+      "old_velocity_shape": [
+        32,
+        12
+      ],
+      "new_velocity_shape": [
+        32,
+        12
+      ],
+      "old_growth_shape": [
+        32,
+        1
+      ],
+      "new_growth_shape": [
+        32,
+        1
+      ]
+    },
+    "zebrafish": {
+      "checkpoint": "SpaPOT_runs/zesta_10_12_18_gat10_h96_192_hybrid_prealigned_nolabel_e1000_s512/save_model/stvcr_notebook_hybrid_model.pth",
+      "max_abs_velocity_diff": 0.0,
+      "max_abs_growth_diff": 0.0,
+      "spatial_diff": 0.0,
+      "gene_diff": 0.0,
+      "old_velocity_shape": [
+        32,
+        12
+      ],
+      "new_velocity_shape": [
+        32,
+        12
+      ],
+      "old_growth_shape": [
+        32,
+        1
+      ],
+      "new_growth_shape": [
+        32,
+        1
+      ]
+    }
+  },
+  "saved_table_rows_verified": {
+    "S4": 33,
+    "S5": 103,
+    "S6": 120
+  },
+  "bayesian_replay": {
+    "status": "PASS",
+    "checks": [
+      {
+        "series": "mouse",
+        "nodes": 40,
+        "max_probability_error": 9.06219543850284e-15
+      },
+      {
+        "series": "zebrafish_B04",
+        "nodes": 40,
+        "max_probability_error": 5.218048215738236e-15
+      },
+      {
+        "series": "zebrafish_B07",
+        "nodes": 40,
+        "max_probability_error": 6.286637876939949e-15
+      },
+      {
+        "series": "axolotl_reaEGC",
+        "nodes": 36,
+        "max_probability_error": 2.4980018054066022e-15
+      },
+      {
+        "series": "axolotl_VLMC",
+        "nodes": 36,
+        "max_probability_error": 4.510281037539698e-16
+      },
+      {
+        "series": "axolotl_CMPN",
+        "nodes": 36,
+        "max_probability_error": 1.887379141862766e-15
+      }
+    ]
+  },
+  "component_checks": [
+    "mouse 0.99/0.01",
+    "zebrafish 0.9/0.1"
+  ],
+  "source_and_copy_hashes_verified": 38,
+  "manuscripts_unchanged": true,
+  "environment": {
+    "python": "3.9.25",
+    "numpy": "2.0.2",
+    "pandas": "2.3.3",
+    "scipy": "1.13.1",
+    "statsmodels": "0.14.6",
+    "torch": "2.8.0"
+  },
+  "limitations": [
+    "No clean-environment pip installation or large training run performed.",
+    "No raw-data end-to-end reproduction or complete main-figure rendering.",
+    "Bayesian historical implementation emitted NumPy matrix RuntimeWarnings; finite posterior checks and saved-output agreement passed.",
+    "Optional KeOps reported missing CPU OpenMP tooling; regression and checkpoint probes passed."
+  ]
+}

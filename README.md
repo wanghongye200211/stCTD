@@ -14,6 +14,23 @@ training and reconstruction-evaluation entry point. Start with a prepared AnnDat
 file or the small synthetic example below. Data, trained weights, and manuscript
 figures are not bundled.
 
+## Manuscript analysis and reproducibility
+
+The [1020 analysis package](analysis/manuscript_1020/README.md) contains frozen
+score inputs and lightweight commands to reproduce all 256 rows of Supplementary
+Tables S4–S6 and the six biological slope-change posteriors used for Figure S34.
+These commands reuse the existing analysis implementation and require no model
+training. Historical STE, gene-sensitivity, perturbation, and benchmark scripts
+are also included as source snapshots with SHA-256 provenance.
+
+Saved-score replay is currently the supported paper-analysis entry point.
+End-to-end recreation from raw expression data remains incomplete: prepared
+datasets, fitted weights, coordinate conversions, and selected-run dependencies
+are not distributed here. Several score definitions differ between the main
+results and supplementary panels; do not treat them as interchangeable. See the
+[submission audit and result-to-code map](docs/submission_audit_20261028.md)
+for exact coverage, Methods differences, and the remaining release requirements.
+
 ## Install
 
 Python 3.9 or later is required. From a terminal:
@@ -193,8 +210,9 @@ specimens; it does not track the same physical cells over time. Transition
 readouts along a trajectory fitted to the full observed series support
 retrospective localization. Prospective early warning requires past-only fitting,
 past-only preprocessing, and held-out future validation. The training entry point
-exports reconstruction results; manuscript-specific transition-score and
-perturbation analyses are not included in this example workflow.
+exports reconstruction results. The separate [manuscript analysis package](analysis/manuscript_1020/README.md)
+replays saved-score statistics and provides historical analysis source for
+inspection; it does not turn the demo into an end-to-end paper reproduction.
 
 ## Repository and checks
 
