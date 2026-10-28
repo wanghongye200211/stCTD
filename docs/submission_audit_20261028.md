@@ -149,14 +149,8 @@ assets remain explicit release requirements.
 
 ## Submission priority and proposed availability wording
 
-The [official RECOMB 2027 call](https://recomb.org/recomb2027/call_for_papers)
-requires public source for new software/analysis methods, sufficient README
-documentation by the submission deadline, and a clear repository link in the
-paper. It does not itself certify this package as compliant or require rerunning
-every large experiment. The full-paper deadline is 4 November 2026 at 23:59 AoE;
-abstract registration is required by 28 October at 23:59 AoE. The main paper
-limit is 10 Letter pages excluding references, with the stated title-page and
-appendix allowances; a journal-length DOCX is not a verified conference PDF.
+This report audits agreement among code, Methods and saved results. Submission
+requirements should be checked against the target venue once it is specified.
 
 Priority before submission: (1) choose and document one definition for each
 reported curve/ranking; (2) retain these verified statistical entry points and
